@@ -1,0 +1,64 @@
+plugins {
+    id 'application'
+    id 'java'
+    id 'gg.jte.gradle' version '2.2.4'
+    id "com.github.ben-manes.versions" version '0.44.0'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+      url 'https://repo.repsy.io/mvn/firebolt/maven'
+    }
+}
+
+dependencies {
+    implementation 'io.javalin:javalin:5.2.0'
+    implementation 'io.javalin:javalin-rendering:5.2.0'
+    implementation 'gg.jte:jte:2.2.4'
+
+    implementation 'org.slf4j:slf4j-simple:2.0.6'
+    implementation 'org.slf4j:slf4j-api:2.0.6'
+
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.2'
+    implementation 'com.firebolt:firebolt-jdbc:2.2.4'
+
+    implementation 'org.pac4j:javalin-pac4j:6.0.0'
+    implementation 'org.pac4j:pac4j-oauth:5.7.0'
+    implementation 'org.pac4j:pac4j-jakartaee:5.7.0'
+
+    implementation 'org.jdbi:jdbi3-core:3.35.0'
+    implementation 'org.jdbi:jdbi3-sqlobject:3.35.0'
+
+    testImplementation 'org.assertj:assertj-core:3.23.1'
+    //testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter('5.9.1')
+        }
+    }
+}
+
+def jvmOptions = [ "-XX:+UseZGC", "--enable-preview" ]
+
+startScripts {
+  defaultJvmOpts = jvmOptions
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += '--enable-preview'
+}
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+
+jte {
+    generate()
+}
+
+application {
+    mainClass = 'io.firebolt.App'
+}
